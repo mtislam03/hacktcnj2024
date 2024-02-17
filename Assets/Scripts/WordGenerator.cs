@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class WordGenerator : MonoBehaviour
 {
@@ -12,9 +13,9 @@ public class WordGenerator : MonoBehaviour
 
     }
 
-    public String GetWord()
+    public void GetWord()
     {
-        int[] words = [
+        string[] words = {
             "Abroad", "Casual", "Around", "Couple",
             "Accept", "Caught", "Arrive", "Course",
             "Access", "Centre", "Artist", "Covers",
@@ -193,8 +194,8 @@ public class WordGenerator : MonoBehaviour
             "Walker", "Wealth", "Weekly", "Weight", 
             "Window", "Winner", "Winter", "Within", 
             "Wonder", "Worker", "Writer", "Yellow", 
-            "Yachts", "Yapper", "Yearly", "Yogurt",
-        ];     
+            "Yachts", "Yapper", "Yearly", "Yogurt"
+        };     
             
     }
 
