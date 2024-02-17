@@ -14,7 +14,7 @@ public class WordGenerator : MonoBehaviour
 
     public String GetWord()
     {
-        words[
+        int[] words = [
             "Abroad"; "Casual"; "Around"; "Couple";
             "Accept"; "Caught"; "Arrive"; "Course";
             "Access"; "Centre"; "Artist"; "Covers";
