@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class WordGenerator : MonoBehaviour
 {
-    private Dictionary<WordType, string[]> all_words = new Dictionary<WordType, string[]>();
+    private static Dictionary<WordType, string[]> all_words = new Dictionary<WordType, string[]>();
 
     public enum WordType { 
         SIX_LETTER, ANIMALS, FOOD, MOVIES, SPORTS, COLORS, VEHICLES
     }
 
     // Start is called before the first frame update
-    void Start()
+    static WordGenerator()
     {
         all_words.Add(WordType.SIX_LETTER, six_letter_words);
         all_words.Add(WordType.ANIMALS, animals);
@@ -21,15 +20,20 @@ public class WordGenerator : MonoBehaviour
         all_words.Add(WordType.SPORTS, sports);
         all_words.Add(WordType.COLORS, colors);
         all_words.Add(WordType.VEHICLES, vehicles);
+
     }
 
-    public void GetWord(WordType category)
+    public static string GetWord(WordType category)
     {
-        //something
+        int max = all_words[category].Length;
+
+        int num = Random.Range(0, max-1);
+
+        return all_words[category][num];
             
     }
 
-    string[] six_letter_words = {
+    static string[] six_letter_words = {
         "Abroad", "Casual", "Around", "Couple",
         "Accept", "Caught", "Arrive", "Course",
         "Access", "Centre", "Artist", "Covers",
@@ -211,7 +215,7 @@ public class WordGenerator : MonoBehaviour
         "Yachts", "Yapper", "Yearly", "Yogurt"
     };     
 
-    string[] animals = {
+    static string[] animals = {
         "Dog", "Cat", "Fish", "Bird",
         "Elephant", "Lion", "Tiger",
         "Bear", "Deer", "Horse",
@@ -246,7 +250,7 @@ public class WordGenerator : MonoBehaviour
         "Lemur", "Armadillo",
     };
 
-    string[] food = {
+    static string[] food = {
         "Pizza", "Burger", "Pasta", "Salad", "Sandwich", "Sushi", "Taco", "Burrito", "Soup", "Steak",
         "Chicken", "Fish", "Shrimp", "Lobster", "Crab", "Oyster", "Mussel", "Clam", "Calamari", "Tempura",
         "Ramen", "Noodle", "Rice", "Curry", "Sausage", "Bacon", "Pancake", "Waffle", "French toast", "Egg",
@@ -260,7 +264,7 @@ public class WordGenerator : MonoBehaviour
         "Tamale"
     };
 
-    string[] movies = {
+    static string[] movies = {
         "Titanic", "Avatar", "Inception", "Jurassic Park", "Star Wars", "Harry Potter", "The Lord of the Rings", "The Avengers", "The Godfather", "The Shawshank Redemption",
         "Forrest Gump", "The Matrix", "The Dark Knight", "Toy Story", "Finding Nemo", "The Lion King", "Frozen", "Beauty and the Beast", "Aladdin", "Cinderella",
         "The Little Mermaid", "Snow White", "Mulan", "Brave", "Moana", "Zootopia", "Shrek", "Despicable Me", "Minions", "The Hunger Games",
@@ -273,7 +277,7 @@ public class WordGenerator : MonoBehaviour
         "Ghost Rider", "Venom", "Daredevil", "Luke Cage", "Iron Fist", "Jessica Jones", "The Defenders", "The Falcon and the Winter Soldier"
     };
 
-    string[] sports = {
+    static string[] sports = {
         "Soccer", "Football", "Basketball", "Baseball", "Tennis", "Golf", "Rugby", "Cricket", "Volleyball", "Hockey",
         "Badminton", "Table Tennis", "Swimming", "Diving", "Water Polo", "Surfing", "Skateboarding", "Snowboarding", "Skiing",
         "Bobsleigh", "Luge", "Skeleton", "Gymnastics", "Track and Field", "Marathon", "Triathlon", "Cycling", "BMX", "Mountain Biking",
@@ -286,7 +290,7 @@ public class WordGenerator : MonoBehaviour
         "Billiards", "Bowling", "Curling", "Golf", "Boxing", "Skiing", "Snowboarding", "Skating", "Swimming"
     };
 
-    string[] colors = {
+    static string[] colors = {
          "White", "Black", "Red", "Blue", "Green", "Yellow", "Purple", "Orange", "Pink", "Brown",
         "Gray", "Cyan", "Magenta", "Lime", "Teal", "Indigo", "Maroon", "Olive", "Navy", "Beige",
         "Turquoise", "Lavender", "Periwinkle", "Violet", "Mauve", "Crimson", "Azure", "Coral", "Gold", "Silver",
@@ -298,12 +302,11 @@ public class WordGenerator : MonoBehaviour
         "Midnight Blue", "Mint Green", "Pastel Pink", "Raspberry", "Rose", "Scarlet", "Seafoam"
     };
 
-    string[] vehicles = {
+    static string[] vehicles = {
         "Car", "Truck", "Motorcycle", "Bus", "Bicycle", "Train", "Boat", "Scooter", "Van", "Helicopter", "Yacht", "Plane", 
         "Skateboard", "Skates", "Submarine", "Jet ski", "Blimp", "Rocket", "Kayak", "Canoe", "Tank",
         "Golf cart"
     };
-
 
 }
 
