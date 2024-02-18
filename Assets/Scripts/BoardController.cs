@@ -5,39 +5,50 @@ using TMPro;
 
 public class BoardController : MonoBehaviour
 {
-    public Vector2 bottomLeft;
-    public Vector2 bounds;
     public int rowNum = 3;
     public float partitionWidth;
     public GameObject partition;
-
     public GameObject tilePrefab;
-
-    private Tile[,] tiles;
-
-    private int CurrentPlayer = 1;
-
     public TextMeshProUGUI TurnDisplay;
+    public TextMeshProUGUI CatDisplay;
+    public TextMeshProUGUI WordDisplay;
+    public float secsBetweenTurns;
 
+    public Color currHighlightColor;
+    public Color[] playerColors;
+
+    private int numPlayers;
+    private Tile[,] tiles;
+    private int CurrentPlayer;
     private bool tileSelected;
-    //public TMT_Text TurnDisplay;
-
-    //TurnDisplay.SetText(CurrentPlayer.ToString());
-    // TurnDisplay.text = "Hello";
     
-
-    // Start is called before the first frame update
     void Start()
     {
+        numPlayers = playerColors.Length;
+        CatDisplay.SetText("Current Category: Animals");
+
+        CurrentPlayer = -1;
+        NextPlayer();
         tileSelected = false;
         tiles = new Tile[rowNum, rowNum];
-        Vector2 tileSize = bounds / rowNum;
+        Generate();
+    }
+
+    void Generate()
+    {
+        RectTransform rt = GetComponent<RectTransform>();
+        Vector2 bottomLeft = new Vector2(rt.rect.xMin, rt.rect.yMin);
+        Vector2 bounds = rt.rect.size;
+
+        float tileX = (bounds.x - partitionWidth * (rowNum - 1)) / rowNum;
+        float tileY = (bounds.y - partitionWidth * (rowNum - 1)) / rowNum;
+        Vector2 tileSize = new Vector2(tileX, tileY);
         for (int y = 0; y < rowNum; y++)
         {
             for (int x = 0; x < rowNum; x++)
             {
                 Tile tile = Instantiate(tilePrefab, transform).GetComponent<Tile>();
-                tile.transform.localPosition = bottomLeft + tileSize / 2 + new Vector2(x, y) * (tileSize + new Vector2(partitionWidth, partitionWidth) / 2);
+                tile.transform.localPosition = bottomLeft + tileSize / 2 + new Vector2(x, y) * (tileSize + new Vector2(partitionWidth, partitionWidth));
                 tile.transform.localScale = tileSize;
                 tiles[x, y] = tile;
                 tile.OnClick += OnClick;
@@ -46,7 +57,7 @@ public class BoardController : MonoBehaviour
                 {
                     GameObject part = Instantiate(partition, transform);
                     Vector2 scale = new Vector2(partitionWidth, bounds.y);
-                    part.transform.localPosition = bottomLeft + new Vector2(x, 0) * tileSize + scale / 2;
+                    part.transform.localPosition = bottomLeft + new Vector2(x, 0) * (tileSize + new Vector2(partitionWidth, partitionWidth)) + new Vector2(-partitionWidth, bounds.y) / 2;
                     part.transform.localScale = scale;
                 }
             }
@@ -54,13 +65,10 @@ public class BoardController : MonoBehaviour
             {
                 GameObject part = Instantiate(partition, transform);
                 Vector2 scale = new Vector2(bounds.x, partitionWidth);
-                part.transform.localPosition = bottomLeft + new Vector2(0, y) * tileSize + scale / 2;
+                part.transform.localPosition = bottomLeft + new Vector2(0, y) * (tileSize + new Vector2(partitionWidth, partitionWidth)) + new Vector2(bounds.x, -partitionWidth) / 2;
                 part.transform.localScale = scale;
             }
         }
-
-        //TurnDisplay.SetText(CurrentPlayer.ToString());
-        TurnDisplay.SetText("Current Turn " + CurrentPlayer.ToString());
     }
 
     // Update is called once per frame
@@ -71,127 +79,123 @@ public class BoardController : MonoBehaviour
 
 
 
-    void ChangePlayer() {
-        if (CurrentPlayer == 1)
-        {
-            CurrentPlayer = 0;
-        }
-            
-        else 
-        {
-            CurrentPlayer = 1;
-        }
+    void NextPlayer() {
+        CurrentPlayer = (CurrentPlayer + 1) % numPlayers;
+        TurnDisplay.SetText("Current Player: " + (CurrentPlayer + 1).ToString());
+        TurnDisplay.color = playerColors[CurrentPlayer];
     }
 
     
-    bool checkColumn()
+    bool CheckColumn()
     {
         // column wise
         for (int y = 0; y < rowNum; y++)
         {
             for (int x = 0; x < rowNum; x++)
             {
-
-                //Debug.Log()
-
-                if (tiles[x,y].CheckSquareWon() != CurrentPlayer) {
+                if (tiles[x,y].Winner != CurrentPlayer) {
                     return false;
                 }
-                
-            
             }
-
         }
-
         return true;
     }
 
-    bool checkRow()
+    bool CheckRow()
     {
         // row wise
         for (int x = 0; x < rowNum; x++)
         {
             for (int y = 0; y < rowNum; y++)
             {
-                
-                if (tiles[y,x].CheckSquareWon() != CurrentPlayer) {
+                if (tiles[y,x].Winner != CurrentPlayer) {
                     return false;
                 }
                 
             }
 
         }
-
         return true;
     }
 
-    bool checkLeftDiag()
+    bool CheckLeftDiag()
     {
         // left diag
         for (int x = 0; x < rowNum; x++)
         {
-                
-                if (tiles[x,x].CheckSquareWon() != CurrentPlayer) {
-                    return false;
-                }
-
+            if (tiles[x,x].Winner != CurrentPlayer) {
+                return false;
+            }
         }
-
         return true;
     }
 
-    bool checkRightDiag()
+    bool CheckRightDiag()
     {
         // right diag
         for (int x = 0; x < rowNum; x++)
         {
-                
-                int y = rowNum - x - 1;
-                if (tiles[x,y].CheckSquareWon() != CurrentPlayer) {
-                    return false;
-                }
-
+            int y = rowNum - x - 1;
+            if (tiles[x,y].Winner != CurrentPlayer) {
+                return false;
+            }
         }
 
         return true;
     }
 
-    bool checkForWin() 
+    bool CheckForWin() 
     {
-
-        if (checkColumn() | checkRow() | checkLeftDiag() | checkRightDiag()) {
-            return true;
-
-        } else {
-
-            return false;
-        }
+        return CheckColumn() | CheckRow() | CheckLeftDiag() | CheckRightDiag();
     }
+
     void EndTurn(Tile tile, bool continueTurn)
     {
-
+        tile.UpdateText(WordDisplay);
         if (continueTurn) return;
-        if (tile.GameWon())
+        bool won = tile.GameWon();
+        if (won)
         {
-            bool winner = checkForWin();
+            tile.SetColor(playerColors[CurrentPlayer]);
+            tile.Winner = CurrentPlayer;
+
+            // check for tic tac toe win
+            bool winner = CheckForWin();
 
             if (winner) {
                 Debug.Log("Player " + CurrentPlayer.ToString() + "has won!");
             }
-        
         }
-        tile.game.Deactivate();
-        ChangePlayer();
-        TurnDisplay.SetText("Current Turn " + CurrentPlayer.ToString());
+        StartCoroutine(StepTurn(tile, won));
+    }
+
+    IEnumerator StepTurn(Tile tile, bool won)
+    {
+        yield return new WaitForSeconds(secsBetweenTurns);
+        ClearWord();
+        if (!won)
+        {
+            tile.ResetColor();
+        }
+        NextPlayer();
         tileSelected = false;
+        yield break;
     }
 
     private void OnClick(Tile tile)
     {
-        if (tile.CheckSquareWon() == -1 && !tileSelected)
+        if (tile.Winner == -1 && !tileSelected)
         {
             tile.PlayGame();
             tileSelected = true;
+
+            tile.UpdateText(WordDisplay);
+            tile.SetColor(currHighlightColor);
         }
+    }
+
+    private void ClearWord()
+    {
+        WordDisplay.SetText("");
     }
 }

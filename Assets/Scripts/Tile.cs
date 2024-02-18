@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Tile : MonoBehaviour
 {
@@ -13,8 +14,21 @@ public class Tile : MonoBehaviour
 
     public Game game;
     public TextMeshProUGUI text;
+    public Image img;
 
     private int SquareWinner = -1;
+    private Color defaultColor;
+
+    public int Winner
+    {
+        get => SquareWinner;
+        set { SquareWinner = value; }
+    }
+
+    private void Start()
+    {
+        defaultColor = img.color;
+    }
 
     private void Update()
     {
@@ -34,7 +48,9 @@ public class Tile : MonoBehaviour
     private void OnGUI()
     {
         if (game.Inactive) return;
-        OnTurnTaken(this, game.TakeInput(Event.current));
+        bool cont = game.TakeInput(Event.current);
+        if (!cont) game.Deactivate();
+        OnTurnTaken(this, cont);
     }
     
     public bool GameWon()
@@ -47,9 +63,18 @@ public class Tile : MonoBehaviour
         OnClick(this);
     }
 
-    //returns who won square, if no one has won square yet returns -1
-    public int CheckSquareWon() 
+    public void UpdateText(TextMeshProUGUI gui)
     {
-        return SquareWinner;
+        gui.SetText(game.GetPreview());
+    }
+
+    public void SetColor(Color color)
+    {
+        img.color = color;
+    }
+
+    public void ResetColor()
+    {
+        img.color = defaultColor;
     }
 }
