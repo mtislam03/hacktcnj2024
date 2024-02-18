@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BoardController : MonoBehaviour
 {
@@ -14,9 +15,21 @@ public class BoardController : MonoBehaviour
 
     private Tile[,] tiles;
 
+    private int CurrentPlayer = 1;
+
+    public TextMeshProUGUI TurnDisplay;
+
+    private bool tileSelected;
+    //public TMT_Text TurnDisplay;
+
+    //TurnDisplay.SetText(CurrentPlayer.ToString());
+    // TurnDisplay.text = "Hello";
+    
+
     // Start is called before the first frame update
     void Start()
     {
+        tileSelected = false;
         tiles = new Tile[rowNum, rowNum];
         Vector2 tileSize = bounds / rowNum;
         for (int y = 0; y < rowNum; y++)
@@ -28,6 +41,7 @@ public class BoardController : MonoBehaviour
                 tile.transform.localScale = tileSize;
                 tiles[x, y] = tile;
                 tile.OnClick += OnClick;
+                tile.OnTurnTaken += EndTurn;
                 if (y == 0 && x > 0)
                 {
                     GameObject part = Instantiate(partition, transform);
@@ -44,10 +58,48 @@ public class BoardController : MonoBehaviour
                 part.transform.localScale = scale;
             }
         }
+
+        //TurnDisplay.SetText(CurrentPlayer.ToString());
+        TurnDisplay.SetText("Current Turn " + CurrentPlayer.ToString());
     }
 
-    void OnClick(Tile tile)
+    // Update is called once per frame
+    void Update()
     {
-        Debug.Log("Clicked tile");
+        
+    }
+
+    void ChangePlayer() {
+        if (CurrentPlayer == 1)
+        {
+            CurrentPlayer = 0;
+        }
+            
+        else 
+        {
+            CurrentPlayer = 1;
+        }
+    }
+
+    void EndTurn(Tile tile, bool continueTurn)
+    {
+        if (continueTurn) return;
+        if (tile.GameWon())
+        {
+            // game win sequence
+        }
+        tile.game.Deactivate();
+        ChangePlayer();
+        TurnDisplay.SetText("Current Turn " + CurrentPlayer.ToString());
+        tileSelected = false;
+    }
+
+    private void OnClick(Tile tile)
+    {
+        if (tile.CheckSquareWon() == -1 && !tileSelected)
+        {
+            tile.PlayGame();
+            tileSelected = true;
+        }
     }
 }
