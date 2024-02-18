@@ -12,6 +12,8 @@ public class BoardController : MonoBehaviour
     public TextMeshProUGUI TurnDisplay;
     public TextMeshProUGUI CatDisplay;
     public TextMeshProUGUI WordDisplay;
+    public TextMeshProUGUI LettersUsedGUI;
+    public TextMeshProUGUI LetterDisplay;
     public float secsBetweenTurns;
 
     public Color currHighlightColor;
@@ -32,6 +34,7 @@ public class BoardController : MonoBehaviour
         tileSelected = false;
         tiles = new Tile[rowNum, rowNum];
         Generate();
+        LettersUsedGUI.enabled = false;
     }
 
     void Generate()
@@ -83,6 +86,7 @@ public class BoardController : MonoBehaviour
         CurrentPlayer = (CurrentPlayer + 1) % numPlayers;
         TurnDisplay.SetText("Current Player: " + (CurrentPlayer + 1).ToString());
         TurnDisplay.color = playerColors[CurrentPlayer];
+        ShowPick();
     }
 
     
@@ -152,6 +156,7 @@ public class BoardController : MonoBehaviour
     void EndTurn(Tile tile, bool continueTurn)
     {
         tile.UpdateText(WordDisplay);
+        tile.UpdateLetterBank(LetterDisplay);
         if (continueTurn) return;
         bool won = tile.GameWon();
         if (won)
@@ -172,13 +177,14 @@ public class BoardController : MonoBehaviour
     IEnumerator StepTurn(Tile tile, bool won)
     {
         yield return new WaitForSeconds(secsBetweenTurns);
-        ClearWord();
         if (!won)
         {
             tile.ResetColor();
+            NextPlayer();
         }
-        NextPlayer();
+        else ShowPick();
         tileSelected = false;
+        LettersUsedGUI.enabled = false;
         yield break;
     }
 
@@ -190,12 +196,16 @@ public class BoardController : MonoBehaviour
             tileSelected = true;
 
             tile.UpdateText(WordDisplay);
+            tile.UpdateLetterBank(LetterDisplay);
             tile.SetColor(currHighlightColor);
+            LettersUsedGUI.enabled = true;
         }
     }
 
-    private void ClearWord()
+    private void ShowPick()
     {
-        WordDisplay.SetText("");
+        LetterDisplay.SetText("");
+        WordDisplay.SetText("Player " + (CurrentPlayer + 1) + "'s pick");
+        WordDisplay.color = playerColors[CurrentPlayer];
     }
 }

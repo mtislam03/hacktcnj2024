@@ -12,7 +12,7 @@ public class Tile : MonoBehaviour
     public delegate void ClickAction(Tile tile);
     public event ClickAction OnClick;
 
-    public Game game;
+    public Hangman game;
     public TextMeshProUGUI text;
     public Image img;
 
@@ -32,7 +32,7 @@ public class Tile : MonoBehaviour
 
     private void Update()
     {
-        text.SetText(game.GetPreview());
+        text.SetText(game.GetRepr());
     }
 
     public void PlayGame()
@@ -65,7 +65,13 @@ public class Tile : MonoBehaviour
 
     public void UpdateText(TextMeshProUGUI gui)
     {
-        gui.SetText(game.GetPreview());
+        gui.SetText(game.GetRepr());
+        gui.color = Color.white;
+    }
+
+    public void UpdateLetterBank(TextMeshProUGUI gui)
+    {
+        gui.SetText(string.Join("", game.GetWrongLetters()));
     }
 
     public void SetColor(Color color)
