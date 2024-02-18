@@ -198,6 +198,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd44721e2ac4041d98dd90207266e876, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goodLetterClip: {fileID: 8300000, guid: 65fa8053dd0341b4ea7bf47f949e0f10, type: 3}
+  badLetterClip: {fileID: 8300000, guid: b1678d99c6eddc248b0b9bceb05df57d, type: 3}
+  repeatLetterClip: {fileID: 8300000, guid: f1c2c536189547a4a9c0211fade3eee2, type: 3}
+  winTileClip: {fileID: 8300000, guid: 0828dcae1ff956644be581793d4a3dc7, type: 3}
 --- !u!1 &8483519500373571824
 GameObject:
   m_ObjectHideFlags: 0

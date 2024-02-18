@@ -5,6 +5,11 @@ using System.Text.RegularExpressions;
 
 public class Hangman : MonoBehaviour
 {
+    public AudioClip goodLetterClip;
+    public AudioClip badLetterClip;
+    public AudioClip repeatLetterClip;
+    public AudioClip winTileClip;
+
     private string word;
     private bool[] guessed;
     // 26-character array; if a character is entered, it is set to 1 and skipped in the future
@@ -64,8 +69,11 @@ public class Hangman : MonoBehaviour
         string lowWord = word.ToLower();
 
         int letterPos = lowGuess - 'a';
-        if (letterPos < 0 || letterPos >= 26) return true;
-        if (guessedLetters[letterPos] > 0) return true;
+        if (letterPos < 0 || letterPos >= 26 || guessedLetters[letterPos] > 0)
+        {
+            AudioManager.Instance.PlayEffect(repeatLetterClip);
+            return true;
+        }
 
         guessedLetters[letterPos] = 1;
         for (int i = 0; i < word.Length; i++){
@@ -75,7 +83,11 @@ public class Hangman : MonoBehaviour
                 guessedLetters[letterPos] = 2;
             }
         }
-        if (!hit) Deactivate();
+        if (!hit)
+        {
+            Deactivate();
+            AudioManager.Instance.PlayEffect(badLetterClip);
+        } else AudioManager.Instance.PlayEffect(goodLetterClip);
         return hit && !DidWin();
     }
 
@@ -110,14 +122,15 @@ public class Hangman : MonoBehaviour
                 return false;
             }
         }
+        AudioManager.Instance.PlayEffect(winTileClip);
         return true;
     }
 
     public bool TakeInput(Event e)
     {
-        if (e.isKey && e.keyCode.ToString().Length == 1)
+        if (e.isKey && e.type == EventType.KeyDown)
         {
-            return CheckGuess(e.keyCode.ToString()[0]);
+            if (e.keyCode.ToString().Length == 1) return CheckGuess(e.keyCode.ToString()[0]);
         }
         return true;
     }
