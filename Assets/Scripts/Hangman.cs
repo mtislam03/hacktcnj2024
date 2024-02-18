@@ -46,6 +46,10 @@ public class Hangman : MonoBehaviour
         guessedLetters = new int[26];
         SetWord(WordGenerator.GetWord(WordGenerator.WordType.ANIMALS));
     }
+    public void InitCat(WordGenerator.WordType cat)
+    {
+        SetWord(WordGenerator.GetWord(cat));
+    }
 
     public void SetWord(string word){
         this.word = word;

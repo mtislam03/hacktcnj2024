@@ -26,11 +26,17 @@ public class BoardController : MonoBehaviour
     private Tile[,] tiles;
     private int CurrentPlayer;
     private bool tileSelected;
+    private WordGenerator.WordType category;
     
     void Start()
     {
         numPlayers = playerColors.Length;
-        CatDisplay.SetText("Current Category: Animals");
+        int namesCount = System.Enum.GetNames(typeof(WordGenerator.WordType)).Length;
+        // CatDisplay.SetText("Current Category: Animals");
+        int randomIndex = Random.Range(0, namesCount);
+
+        category = (WordGenerator.WordType)randomIndex;
+        CatDisplay.SetText("Current Category: " + category.ToString());
 
         CurrentPlayer = -1;
         NextPlayer();
@@ -59,6 +65,7 @@ public class BoardController : MonoBehaviour
                 tiles[x, y] = tile;
                 tile.OnClick += OnClick;
                 tile.OnTurnTaken += EndTurn;
+                tile.SetCategory(category);
                 if (y == 0 && x > 0)
                 {
                     GameObject part = Instantiate(partition, transform);
