@@ -3,36 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text.RegularExpressions;
 
-public class Hangman : MonoBehaviour
+public class Hangman : Game
 {
-    private bool revealed;
     private string word;
     private bool[] guessed;
 
     private void Start()
     {
-        revealed = false;
-    }
-
-    public void Reveal()
-    {
-        revealed = true;
+        SetWord(WordGenerator.GetWord(WordGenerator.WordType.ANIMALS));
     }
 
     public void SetWord(string word){
         this.word = word;
+        guessed = new bool[word.Length];
         for (int i = 0; i < word.Length; i++){
             guessed[i] = false;
         }
     }
     
     // Update is called once per frame
-    public bool CheckGuess(char guess)
+    private bool CheckGuess(char guess)
     {
         bool hit = false;
         char lowGuess = char.ToLower(guess);
         string lowWord = word.ToLower();
-        
 
         for (int i = 0; i < word.Length; i++){
             if(lowWord[i] == lowGuess) {
@@ -40,11 +34,23 @@ public class Hangman : MonoBehaviour
                 hit = true;
             }
         }
-        return hit;
+        if (!hit) Deactivate();
+        return hit && !DidWin();
     }
 
-    public string GetRepr(){
-        if (!revealed) return "";
+    public override string GetPreview()
+    {
+        return GetRepr();
+    }
+
+    public override string GetName()
+    {
+        return "Hangman";
+    }
+
+
+    private string GetRepr(){
+        if (!Revealed) return "";
         string output = "";
         for (int i = 0; i < word.Length; i++){
             if (guessed[i]){
@@ -56,11 +62,20 @@ public class Hangman : MonoBehaviour
         return output;
     }
 
-    public bool CheckWin(){
+    public override bool DidWin(){
         for (int i = 0; i < word.Length; i++){
             if (!guessed[i]){
                 return false;
             }
+        }
+        return true;
+    }
+
+    public override bool TakeInput(Event e)
+    {
+        if (e.isKey && e.keyCode.ToString().Length == 1)
+        {
+            return CheckGuess(e.keyCode.ToString()[0]);
         }
         return true;
     }

@@ -5,19 +5,44 @@ using TMPro;
 
 public class Tile : MonoBehaviour
 {
+    public delegate void TurnTakenAction(Tile tile, bool continueTurn);
+    public event TurnTakenAction OnTurnTaken;
+
     public delegate void ClickAction(Tile tile);
     public event ClickAction OnClick;
-    public int SquareWinner = -1;
 
-    public Hangman hangman;
+    public Game game;
     public TextMeshProUGUI text;
+
+    private int SquareWinner = -1;
 
     private void Update()
     {
-        text.SetText(hangman.GetRepr());
+        text.SetText(game.GetPreview());
     }
 
-    public void OnClickInt()
+    public void PlayGame()
+    {
+        game.Activate();
+    }
+
+    public void PauseGame()
+    {
+        game.Deactivate();
+    }
+
+    private void OnGUI()
+    {
+        if (game.Inactive) return;
+        OnTurnTaken(this, game.TakeInput(Event.current));
+    }
+    
+    public bool GameWon()
+    {
+        return game.DidWin();
+    }
+
+    void OnClickInt()
     {
         OnClick(this);
     }
@@ -25,21 +50,6 @@ public class Tile : MonoBehaviour
     //returns who won square, if no one has won square yet returns -1
     public int CheckSquareWon() 
     {
-        if (SquareWinner == -1)
-        {
-            return -1;
-
-        }
-        else if (SquareWinner == 1)
-        {
-            return 1;
-        } 
-        else 
-        {
-            return 0;
-        }
-
-
-
+        return SquareWinner;
     }
 }

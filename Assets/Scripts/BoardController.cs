@@ -18,6 +18,8 @@ public class BoardController : MonoBehaviour
     private int CurrentPlayer = 1;
 
     public TextMeshProUGUI TurnDisplay;
+
+    private bool tileSelected;
     //public TMT_Text TurnDisplay;
 
     //TurnDisplay.SetText(CurrentPlayer.ToString());
@@ -27,6 +29,7 @@ public class BoardController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        tileSelected = false;
         tiles = new Tile[rowNum, rowNum];
         Vector2 tileSize = bounds / rowNum;
         for (int y = 0; y < rowNum; y++)
@@ -38,6 +41,7 @@ public class BoardController : MonoBehaviour
                 tile.transform.localScale = tileSize;
                 tiles[x, y] = tile;
                 tile.OnClick += OnClick;
+                tile.OnTurnTaken += EndTurn;
                 if (y == 0 && x > 0)
                 {
                     GameObject part = Instantiate(partition, transform);
@@ -79,27 +83,7 @@ public class BoardController : MonoBehaviour
         }
     }
 
-    void OnClick(Tile tile)
-    {
-  
-        Debug.Log("Current turn:" + CurrentPlayer);
-
-        if (tile.CheckSquareWon() == -1) {
-            
-            ChangePlayer();
-            TurnDisplay.SetText("Current Turn " + CurrentPlayer.ToString());
-
-        }
-
-        bool winner = checkForWin();
-
-        if (winner) {
-            Debug.Log("Player " + CurrentPlayer.ToString() + "has won!");
-        }
-        // Debug.Log(winner);
-           
-    }
-
+    
     bool checkColumn()
     {
         // column wise
@@ -108,7 +92,9 @@ public class BoardController : MonoBehaviour
             for (int x = 0; x < rowNum; x++)
             {
 
-                if (tiles[x,y].SquareWinner != CurrentPlayer) {
+                //Debug.Log()
+
+                if (tiles[x,y].CheckSquareWon() != CurrentPlayer) {
                     return false;
                 }
                 
@@ -128,7 +114,7 @@ public class BoardController : MonoBehaviour
             for (int y = 0; y < rowNum; y++)
             {
                 
-                if (tiles[y,x].SquareWinner != CurrentPlayer) {
+                if (tiles[y,x].CheckSquareWon() != CurrentPlayer) {
                     return false;
                 }
                 
@@ -145,7 +131,7 @@ public class BoardController : MonoBehaviour
         for (int x = 0; x < rowNum; x++)
         {
                 
-                if (tiles[x,x].SquareWinner != CurrentPlayer) {
+                if (tiles[x,x].CheckSquareWon() != CurrentPlayer) {
                     return false;
                 }
 
@@ -161,7 +147,7 @@ public class BoardController : MonoBehaviour
         {
                 
                 int y = rowNum - x - 1;
-                if (tiles[x,y].SquareWinner != CurrentPlayer) {
+                if (tiles[x,y].CheckSquareWon() != CurrentPlayer) {
                     return false;
                 }
 
@@ -180,6 +166,32 @@ public class BoardController : MonoBehaviour
 
             return false;
         }
+    }
+    void EndTurn(Tile tile, bool continueTurn)
+    {
+
+        if (continueTurn) return;
+        if (tile.GameWon())
+        {
+            bool winner = checkForWin();
+
+            if (winner) {
+                Debug.Log("Player " + CurrentPlayer.ToString() + "has won!");
+            }
         
+        }
+        tile.game.Deactivate();
+        ChangePlayer();
+        TurnDisplay.SetText("Current Turn " + CurrentPlayer.ToString());
+        tileSelected = false;
+    }
+
+    private void OnClick(Tile tile)
+    {
+        if (tile.CheckSquareWon() == -1 && !tileSelected)
+        {
+            tile.PlayGame();
+            tileSelected = true;
+        }
     }
 }
