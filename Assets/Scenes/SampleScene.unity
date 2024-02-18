@@ -1835,7 +1835,8 @@ MonoBehaviour:
   LetterDisplay: {fileID: 1176533824}
   secsBetweenTurns: 1
   clickClip: {fileID: 8300000, guid: 74c84f1155ca9a245adacebf4432fc61, type: 3}
-  badClickClip: {fileID: 0}
+  badClickClip: {fileID: 8300000, guid: f1c2c536189547a4a9c0211fade3eee2, type: 3}
+  winClip: {fileID: 8300000, guid: 6c3394d21410cf442844a60a3d6c52b6, type: 3}
   currHighlightColor: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
   playerColors:
   - {r: 0.8113208, g: 0.14925243, b: 0.14925243, a: 1}

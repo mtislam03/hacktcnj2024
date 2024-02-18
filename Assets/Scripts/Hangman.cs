@@ -110,7 +110,7 @@ public class Hangman : MonoBehaviour
         if (!Revealed) return "";
         string output = "";
         for (int i = 0; i < word.Length; i++){
-            if (guessed[i]){
+            if (guessed[i] || word[i].Equals(" ") || word[i].Equals("-")){
                 output += word[i];
             } else{
                 output += "_";
@@ -121,7 +121,7 @@ public class Hangman : MonoBehaviour
 
     public bool DidWin(){
         for (int i = 0; i < word.Length; i++){
-            if (!guessed[i]){
+            if (!guessed[i] && !(word[i].Equals(" ")) && !(word[i].Equals("-"))){
                 return false;
             }
         }

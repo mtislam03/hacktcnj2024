@@ -28,6 +28,8 @@ public class BoardController : MonoBehaviour
     private int CurrentPlayer;
     private bool tileSelected;
     private WordGenerator.WordType category;
+
+    private bool active = true;
     
     void Start()
     {
@@ -180,6 +182,12 @@ public class BoardController : MonoBehaviour
             if (winner)
             {
                 AudioManager.Instance.PlayEffect(winClip);
+                active = false;
+                LetterDisplay.SetText("");
+                LettersUsedGUI.enabled = false;
+                WordDisplay.SetText("Player " + (CurrentPlayer+1) + " wins!");
+                WordDisplay.color = playerColors[CurrentPlayer];
+                return;
             }
         }
         StartCoroutine(StepTurn(tile, won));
@@ -201,7 +209,7 @@ public class BoardController : MonoBehaviour
 
     private void OnClick(Tile tile)
     {
-        if (tile.Winner == -1 && !tileSelected)
+        if (tile.Winner == -1 && !tileSelected && active)
         {
             AudioManager.Instance.PlayEffect(clickClip);
             tile.PlayGame();
