@@ -65,6 +65,8 @@ public class BoardController : MonoBehaviour
         
     }
 
+
+
     void ChangePlayer() {
         if (CurrentPlayer == 1)
         {
@@ -79,17 +81,105 @@ public class BoardController : MonoBehaviour
 
     void OnClick(Tile tile)
     {
-        //Debug.Log("Clicked tile");
+  
         Debug.Log("Current turn:" + CurrentPlayer);
 
         if (tile.CheckSquareWon() == -1) {
-            //CurrentPlayer = CurrentPlayer + 1;
             
             ChangePlayer();
             TurnDisplay.SetText("Current Turn " + CurrentPlayer.ToString());
-            // TurnDisplay.text = CurrentPlayer.ToString();
+
         }
+
+        bool winner = checkForWin();
+
+        if (winner) {
+            Debug.Log("Player " + CurrentPlayer.ToString() + "has won!");
+        }
+        // Debug.Log(winner);
+           
+    }
+
+    bool checkColumn()
+    {
+        // column wise
+        for (int y = 0; y < rowNum; y++)
+        {
+            for (int x = 0; x < rowNum; x++)
+            {
+
+                if (tiles[x,y].SquareWinner != CurrentPlayer) {
+                    return false;
+                }
+                
             
-            
+            }
+
+        }
+
+        return true;
+    }
+
+    bool checkRow()
+    {
+        // row wise
+        for (int x = 0; x < rowNum; x++)
+        {
+            for (int y = 0; y < rowNum; y++)
+            {
+                
+                if (tiles[y,x].SquareWinner != CurrentPlayer) {
+                    return false;
+                }
+                
+            }
+
+        }
+
+        return true;
+    }
+
+    bool checkLeftDiag()
+    {
+        // left diag
+        for (int x = 0; x < rowNum; x++)
+        {
+                
+                if (tiles[x,x].SquareWinner != CurrentPlayer) {
+                    return false;
+                }
+
+        }
+
+        return true;
+    }
+
+    bool checkRightDiag()
+    {
+        // right diag
+        for (int x = 0; x < rowNum; x++)
+        {
+                
+                int y = rowNum - x - 1;
+                if (tiles[x,y].SquareWinner != CurrentPlayer) {
+                    return false;
+                }
+
+        }
+
+        return true;
+    }
+
+    bool checkForWin() 
+    {
+
+        if (checkColumn() | checkRow() | checkLeftDiag() | checkRightDiag()) {
+            return true;
+
+        } else {
+
+            return false;
+        }
+        
     }
 }
