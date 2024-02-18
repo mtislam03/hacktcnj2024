@@ -28,6 +28,8 @@ public class BoardController : MonoBehaviour
                 tile.OnClick += OnClick;
             }
         }
+        Debug.Log(WordGenerator.GetWord(WordGenerator.WordType.SIX_LETTER).ToString());
+        
     }
 
     // Update is called once per frame
