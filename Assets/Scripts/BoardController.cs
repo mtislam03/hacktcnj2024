@@ -23,6 +23,8 @@ public class BoardController : MonoBehaviour
     private Tile[,] tiles;
     private int CurrentPlayer;
     private bool tileSelected;
+
+    private bool active = true;
     
     void Start()
     {
@@ -168,9 +170,13 @@ public class BoardController : MonoBehaviour
             bool winner = CheckForWin();
 
             if (winner) {
-                Debug.Log("Player " + CurrentPlayer.ToString() + "has won!");
+                active = false;
+                // Debug.Log("Player " + CurrentPlayer.ToString() + "has won!");
+                WordDisplay.SetText("Player " + (CurrentPlayer+1) + "wins!");
+                WordDisplay.color = playerColors[CurrentPlayer];
+                return;
             }
-        }
+        }~
         StartCoroutine(StepTurn(tile, won));
     }
 
@@ -190,7 +196,7 @@ public class BoardController : MonoBehaviour
 
     private void OnClick(Tile tile)
     {
-        if (tile.Winner == -1 && !tileSelected)
+        if (tile.Winner == -1 && !tileSelected && active)
         {
             tile.PlayGame();
             tileSelected = true;
