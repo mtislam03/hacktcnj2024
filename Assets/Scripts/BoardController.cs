@@ -16,6 +16,9 @@ public class BoardController : MonoBehaviour
     public TextMeshProUGUI LetterDisplay;
     public float secsBetweenTurns;
 
+    public AudioClip clickClip;
+    public AudioClip badClickClip;
+
     public Color currHighlightColor;
     public Color[] playerColors;
 
@@ -91,20 +94,23 @@ public class BoardController : MonoBehaviour
         ShowPick();
     }
 
-    
     bool CheckColumn()
     {
         // column wise
         for (int y = 0; y < rowNum; y++)
         {
+            bool found = true;
             for (int x = 0; x < rowNum; x++)
             {
-                if (tiles[x,y].Winner != CurrentPlayer) {
-                    return false;
+                if (tiles[x, y].Winner != CurrentPlayer)
+                {
+                    found = false;
+                    break;
                 }
             }
+            if (found) return true;
         }
-        return true;
+        return false;
     }
 
     bool CheckRow()
@@ -112,16 +118,18 @@ public class BoardController : MonoBehaviour
         // row wise
         for (int x = 0; x < rowNum; x++)
         {
+            bool found = true;
             for (int y = 0; y < rowNum; y++)
             {
-                if (tiles[y,x].Winner != CurrentPlayer) {
-                    return false;
+                if (tiles[x, y].Winner != CurrentPlayer)
+                {
+                    found = false;
+                    break;
                 }
-                
             }
-
+            if (found) return true;
         }
-        return true;
+        return false;
     }
 
     bool CheckLeftDiag()
@@ -129,9 +137,7 @@ public class BoardController : MonoBehaviour
         // left diag
         for (int x = 0; x < rowNum; x++)
         {
-            if (tiles[x,x].Winner != CurrentPlayer) {
-                return false;
-            }
+            if (tiles[x, x].Winner != CurrentPlayer) return false;
         }
         return true;
     }
@@ -141,12 +147,8 @@ public class BoardController : MonoBehaviour
         // right diag
         for (int x = 0; x < rowNum; x++)
         {
-            int y = rowNum - x - 1;
-            if (tiles[x,y].Winner != CurrentPlayer) {
-                return false;
-            }
+            if (tiles[x, rowNum - x - 1].Winner != CurrentPlayer) return false;
         }
-
         return true;
     }
 
@@ -172,11 +174,13 @@ public class BoardController : MonoBehaviour
             if (winner) {
                 active = false;
                 // Debug.Log("Player " + CurrentPlayer.ToString() + "has won!");
-                WordDisplay.SetText("Player " + (CurrentPlayer+1) + "wins!");
+                LetterDisplay.SetText("");
+                LettersUsedGUI.enabled = false;
+                WordDisplay.SetText("Player " + (CurrentPlayer+1) + " wins!");
                 WordDisplay.color = playerColors[CurrentPlayer];
                 return;
             }
-        }~
+        }
         StartCoroutine(StepTurn(tile, won));
     }
 
@@ -198,6 +202,7 @@ public class BoardController : MonoBehaviour
     {
         if (tile.Winner == -1 && !tileSelected && active)
         {
+            AudioManager.Instance.PlayEffect(clickClip);
             tile.PlayGame();
             tileSelected = true;
 
@@ -205,7 +210,9 @@ public class BoardController : MonoBehaviour
             tile.UpdateLetterBank(LetterDisplay);
             tile.SetColor(currHighlightColor);
             LettersUsedGUI.enabled = true;
+            return;
         }
+        AudioManager.Instance.PlayEffect(badClickClip);
     }
 
     private void ShowPick()
