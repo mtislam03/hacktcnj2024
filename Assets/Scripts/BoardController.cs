@@ -15,7 +15,7 @@ public class BoardController : MonoBehaviour
 
     private Tile[,] tiles;
 
-    public int CurrentPlayer = 1;
+    private int CurrentPlayer = 1;
 
     public TextMeshProUGUI TurnDisplay;
     //public TMT_Text TurnDisplay;
