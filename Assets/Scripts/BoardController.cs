@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BoardController : MonoBehaviour
 {
@@ -11,6 +12,15 @@ public class BoardController : MonoBehaviour
     public GameObject tilePrefab;
 
     private Tile[,] tiles;
+
+    public int CurrentPlayer = 1;
+
+    public TextMeshProUGUI TurnDisplay;
+    //public TMT_Text TurnDisplay;
+
+    //TurnDisplay.SetText(CurrentPlayer.ToString());
+    // TurnDisplay.text = "Hello";
+    
 
     // Start is called before the first frame update
     void Start()
@@ -28,16 +38,42 @@ public class BoardController : MonoBehaviour
                 tile.OnClick += OnClick;
             }
         }
+
+        //TurnDisplay.SetText(CurrentPlayer.ToString());
+        TurnDisplay.SetText("Current Turn " + CurrentPlayer.ToString());
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+    }
 
+    void ChangePlayer() {
+        if (CurrentPlayer == 1)
+        {
+            CurrentPlayer = 0;
+        }
+            
+        else 
+        {
+            CurrentPlayer = 1;
+        }
     }
 
     void OnClick(Tile tile)
     {
-        Debug.Log("Clicked tile");
+        //Debug.Log("Clicked tile");
+        Debug.Log("Current turn:" + CurrentPlayer);
+
+        if (tile.CheckSquareWon() == -1) {
+            //CurrentPlayer = CurrentPlayer + 1;
+            
+            ChangePlayer();
+            TurnDisplay.SetText("Current Turn " + CurrentPlayer.ToString());
+            // TurnDisplay.text = CurrentPlayer.ToString();
+        }
+            
+            
     }
 }
