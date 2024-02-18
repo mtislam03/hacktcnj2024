@@ -5,10 +5,20 @@ using System.Text.RegularExpressions;
 
 public class Hangman : MonoBehaviour
 {
-    
+    private bool revealed;
     private string word;
     private bool[] guessed;
-   
+
+    private void Start()
+    {
+        revealed = false;
+    }
+
+    public void Reveal()
+    {
+        revealed = true;
+    }
+
     public void SetWord(string word){
         this.word = word;
         for (int i = 0; i < word.Length; i++){
@@ -34,6 +44,7 @@ public class Hangman : MonoBehaviour
     }
 
     public string GetRepr(){
+        if (!revealed) return "";
         string output = "";
         for (int i = 0; i < word.Length; i++){
             if (guessed[i]){

@@ -24,7 +24,7 @@ public class BoardController : MonoBehaviour
             for (int x = 0; x < rowNum; x++)
             {
                 Tile tile = Instantiate(tilePrefab, transform).GetComponent<Tile>();
-                tile.transform.localPosition = bottomLeft + tileSize / 2 + new Vector2(x, y) * tileSize;
+                tile.transform.localPosition = bottomLeft + tileSize / 2 + new Vector2(x, y) * (tileSize + new Vector2(partitionWidth, partitionWidth) / 2);
                 tile.transform.localScale = tileSize;
                 tiles[x, y] = tile;
                 tile.OnClick += OnClick;
