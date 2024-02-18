@@ -39,12 +39,11 @@ public class Hangman : MonoBehaviour
         active = false;
     }
 
-    private void Start()
+    private Hangman()
     {
         revealed = false;
         active = false;
         guessedLetters = new int[26];
-        SetWord(WordGenerator.GetWord(WordGenerator.WordType.ANIMALS));
     }
     public void InitCat(WordGenerator.WordType cat)
     {

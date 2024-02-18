@@ -18,6 +18,7 @@ public class BoardController : MonoBehaviour
 
     public AudioClip clickClip;
     public AudioClip badClickClip;
+    public AudioClip winClip;
 
     public Color currHighlightColor;
     public Color[] playerColors;
@@ -178,7 +179,7 @@ public class BoardController : MonoBehaviour
 
             if (winner)
             {
-                Debug.Log("Player " + CurrentPlayer.ToString() + "has won!");
+                AudioManager.Instance.PlayEffect(winClip);
             }
         }
         StartCoroutine(StepTurn(tile, won));
