@@ -5,6 +5,7 @@ using UnityEngine;
 public class WordGenerator : MonoBehaviour
 {
     private static Dictionary<WordType, string[]> all_words = new Dictionary<WordType, string[]>();
+    private static Dictionary<WordType, int> all_max = new Dictionary<WordType, int>();
 
     public enum WordType { 
         SIX_LETTER, ANIMALS, FOOD, MOVIES, SPORTS, COLORS, VEHICLES
@@ -14,23 +15,48 @@ public class WordGenerator : MonoBehaviour
     static WordGenerator()
     {
         all_words.Add(WordType.SIX_LETTER, six_letter_words);
-        all_words.Add(WordType.ANIMALS, animals);
-        all_words.Add(WordType.FOOD, food);
-        all_words.Add(WordType.MOVIES, movies);
-        all_words.Add(WordType.SPORTS, sports);
-        all_words.Add(WordType.COLORS, colors);
-        all_words.Add(WordType.VEHICLES, vehicles);
+        int six_max = six_letter_words.Length;
+        all_max.Add(WordType.SIX_LETTER, six_max);
 
+        all_words.Add(WordType.ANIMALS, animals);
+        int animals_max = animals.Length;
+        all_max.Add(WordType.ANIMALS, animals_max);
+        
+        all_words.Add(WordType.FOOD, food);
+        int food_max = food.Length;
+        all_max.Add(WordType.FOOD, food_max);
+
+        all_words.Add(WordType.MOVIES, movies);
+        int movies_max = movies.Length;
+        all_max.Add(WordType.MOVIES, movies_max);
+
+        all_words.Add(WordType.SPORTS, sports);
+        int sports_max = movies.Length;
+        all_max.Add(WordType.SPORTS, sports_max);
+
+        all_words.Add(WordType.COLORS, colors);
+        int colors_max = colors.Length;
+        all_max.Add(WordType.COLORS, colors_max);
+
+        all_words.Add(WordType.VEHICLES, vehicles);
+        int vehicles_max = vehicles.Length;
+        all_max.Add(WordType.VEHICLES, vehicles_max);
     }
 
+    // returns word of type category, swaps used word into last index, to 'mark' as used
     public static string GetWord(WordType category)
     {
-        int max = all_words[category].Length;
+        int max = all_max[category];
 
-        int num = Random.Range(0, max-1);
+        int num = Random.Range(0, max);
 
-        return all_words[category][num];
-            
+        string word = all_words[category][num];
+        all_words[category][num] = all_words[category][max-1];
+        all_words[category][max-1] = word;
+
+        all_max[category]--; 
+
+        return word;
     }
 
     static string[] six_letter_words = {
