@@ -24,6 +24,10 @@ public class Tile : MonoBehaviour
         get => SquareWinner;
         set { SquareWinner = value; }
     }
+    public void SetCategory(WordGenerator.WordType category)
+    {
+        game.InitCat(category);
+    }
 
     private void Start()
     {
