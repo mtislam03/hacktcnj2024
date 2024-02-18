@@ -12,7 +12,7 @@ public class Hangman : MonoBehaviour
     public void SetWord(string word){
         this.word = word;
         for (int i = 0; i < word.Length; i++){
-            guessed[i] = 0;
+            guessed[i] = false;
         }
     }
     
@@ -21,12 +21,12 @@ public class Hangman : MonoBehaviour
     {
         bool hit = false;
         char lowGuess = char.ToLower(guess);
-        string lowWord = String.ToLower(word);
+        string lowWord = word.ToLower();
         
 
         for (int i = 0; i < word.Length; i++){
             if(lowWord[i] == lowGuess) {
-                guessed[i] = 1;
+                guessed[i] = true;
                 hit = true;
             }
         }
@@ -36,7 +36,7 @@ public class Hangman : MonoBehaviour
     public string GetRepr(){
         string output = "";
         for (int i = 0; i < word.Length; i++){
-            if (guessed[i] == 1){
+            if (guessed[i]){
                 output += word[i];
             } else{
                 output += "_";
@@ -47,7 +47,7 @@ public class Hangman : MonoBehaviour
 
     public bool CheckWin(){
         for (int i = 0; i < word.Length; i++){
-            if (guessed[i] == 0){
+            if (!guessed[i]){
                 return false;
             }
         }
