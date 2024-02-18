@@ -434,8 +434,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15062b36969c25b49be6d0a253656a40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bottomLeft: {x: -300, y: -150}
-  bounds: {x: 600, y: 450}
+  bottomLeft: {x: -500, y: -150}
+  bounds: {x: 1000, y: 750}
   rowNum: 3
   partitionWidth: 20
   partition: {fileID: 4489075718554945876, guid: 0320c1da679ad9e4b8f27bb6cbb79cff, type: 3}

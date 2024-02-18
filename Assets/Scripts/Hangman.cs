@@ -6,16 +6,19 @@ using System.Text.RegularExpressions;
 public class Hangman : MonoBehaviour
 {
     private bool revealed;
+    private bool active;
     private string word;
     private bool[] guessed;
 
     private void Start()
     {
         revealed = false;
+        active = false;
     }
 
-    public void Reveal()
+    public void Activate()
     {
+        active = true;
         revealed = true;
     }
 
@@ -32,7 +35,6 @@ public class Hangman : MonoBehaviour
         bool hit = false;
         char lowGuess = char.ToLower(guess);
         string lowWord = word.ToLower();
-        
 
         for (int i = 0; i < word.Length; i++){
             if(lowWord[i] == lowGuess) {
@@ -40,6 +42,7 @@ public class Hangman : MonoBehaviour
                 hit = true;
             }
         }
+        if (!hit) active = false;
         return hit;
     }
 
